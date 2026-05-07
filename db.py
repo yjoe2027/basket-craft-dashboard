@@ -43,3 +43,23 @@ def get_sales_performance(conn):
         rows,
         columns=["ORDER_MONTH", "PRODUCT_NAME", "TOTAL_REVENUE", "GROSS_PROFIT", "ORDER_COUNT"],
     )
+
+
+def get_kpi_data(conn):
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT ORDER_MONTH, "
+        "SUM(TOTAL_REVENUE) AS TOTAL_REVENUE, "
+        "SUM(ORDER_COUNT) AS TOTAL_ORDERS, "
+        "SUM(TOTAL_REVENUE) / NULLIF(SUM(ORDER_COUNT), 0) AS AVG_ORDER_VALUE, "
+        "SUM(ITEMS_SOLD) AS TOTAL_ITEMS_SOLD "
+        "FROM MART_SALES_PERFORMANCE "
+        "GROUP BY ORDER_MONTH "
+        "ORDER BY ORDER_MONTH DESC "
+        "LIMIT 2"
+    )
+    rows = cur.fetchall()
+    return pd.DataFrame(
+        rows,
+        columns=["ORDER_MONTH", "TOTAL_REVENUE", "TOTAL_ORDERS", "AVG_ORDER_VALUE", "TOTAL_ITEMS_SOLD"],
+    )

@@ -20,6 +20,25 @@ def test_get_table_row_counts_returns_dict():
     assert result == {"ORDERS": 1000, "PRODUCTS": 50}
 
 
+def test_get_kpi_data_returns_dataframe():
+    import db
+
+    mock_conn = MagicMock()
+    mock_conn.cursor.return_value.fetchall.return_value = [
+        (date(2026, 3, 1), 79482.95, 1705, 46.62, 1705),
+        (date(2026, 2, 1), 129010.99, 2701, 47.76, 2701),
+    ]
+
+    result = db.get_kpi_data(mock_conn)
+
+    assert isinstance(result, pd.DataFrame)
+    assert list(result.columns) == [
+        "ORDER_MONTH", "TOTAL_REVENUE", "TOTAL_ORDERS", "AVG_ORDER_VALUE", "TOTAL_ITEMS_SOLD"
+    ]
+    assert len(result) == 2
+    assert result.iloc[0]["TOTAL_REVENUE"] == 79482.95
+
+
 def test_get_sales_performance_returns_dataframe():
     import db
 
