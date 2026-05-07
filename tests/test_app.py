@@ -14,6 +14,11 @@ SAMPLE_PERF_DF = pd.DataFrame([
     },
 ])
 
+SAMPLE_BUNDLE_DF = pd.DataFrame([
+    {"PRODUCT_NAME": "Deluxe Basket", "CO_PURCHASE_COUNT": 42},
+    {"PRODUCT_NAME": "Mini Basket",   "CO_PURCHASE_COUNT": 18},
+])
+
 SAMPLE_KPI_DF = pd.DataFrame([
     {"ORDER_MONTH": date(2026, 3, 1), "TOTAL_REVENUE": 79482.95,  "TOTAL_ORDERS": 1705, "AVG_ORDER_VALUE": 46.62, "TOTAL_ITEMS_SOLD": 1705},
     {"ORDER_MONTH": date(2026, 2, 1), "TOTAL_REVENUE": 129010.99, "TOTAL_ORDERS": 2701, "AVG_ORDER_VALUE": 47.76, "TOTAL_ITEMS_SOLD": 2701},
@@ -33,6 +38,7 @@ def _run_app(**overrides):
         get_sales_performance=SAMPLE_PERF_DF,
         get_kpi_data=SAMPLE_KPI_DF,
         get_revenue_trend=SAMPLE_TREND_DF,
+        get_bundle_data=SAMPLE_BUNDLE_DF,
     )
     kwargs = {**defaults, **overrides}
     mock_conn = kwargs.pop("get_connection")
@@ -40,7 +46,8 @@ def _run_app(**overrides):
          patch("db.get_table_row_counts", return_value=kwargs["get_table_row_counts"]), \
          patch("db.get_sales_performance", return_value=kwargs["get_sales_performance"]), \
          patch("db.get_kpi_data", return_value=kwargs["get_kpi_data"]), \
-         patch("db.get_revenue_trend", return_value=kwargs["get_revenue_trend"]):
+         patch("db.get_revenue_trend", return_value=kwargs["get_revenue_trend"]), \
+         patch("db.get_bundle_data", return_value=kwargs["get_bundle_data"]):
         return AppTest.from_file("app.py").run()
 
 
@@ -74,3 +81,9 @@ def test_top_products_section_renders():
     at = _run_app()
     assert not at.exception
     assert any(s.value == "Top Products" for s in at.subheader)
+
+
+def test_bundle_finder_section_renders():
+    at = _run_app()
+    assert not at.exception
+    assert any(s.value == "Bundle Finder" for s in at.subheader)

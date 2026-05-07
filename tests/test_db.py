@@ -56,3 +56,20 @@ def test_get_sales_performance_returns_dataframe():
     ]
     assert len(result) == 2
     assert result.iloc[0]["PRODUCT_NAME"] == "Gift Basket"
+
+
+def test_get_bundle_data_returns_dataframe():
+    import db
+
+    mock_conn = MagicMock()
+    mock_conn.cursor.return_value.fetchall.return_value = [
+        ("Deluxe Basket", 42),
+        ("Mini Basket",   18),
+    ]
+
+    result = db.get_bundle_data(mock_conn, "Gift Basket")
+
+    assert isinstance(result, pd.DataFrame)
+    assert list(result.columns) == ["PRODUCT_NAME", "CO_PURCHASE_COUNT"]
+    assert len(result) == 2
+    assert result.iloc[0]["CO_PURCHASE_COUNT"] == 42

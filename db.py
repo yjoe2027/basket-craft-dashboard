@@ -57,6 +57,22 @@ def get_revenue_trend(conn):
     return pd.DataFrame(rows, columns=["ORDER_MONTH", "TOTAL_REVENUE"])
 
 
+def get_bundle_data(conn, product_name):
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT b.PRODUCT_NAME, COUNT(DISTINCT a.ORDER_ID) AS CO_PURCHASE_COUNT "
+        "FROM FCT_ORDER_ITEMS a "
+        "JOIN FCT_ORDER_ITEMS b ON a.ORDER_ID = b.ORDER_ID "
+        "  AND a.PRODUCT_NAME != b.PRODUCT_NAME "
+        "WHERE a.PRODUCT_NAME = %s "
+        "GROUP BY b.PRODUCT_NAME "
+        "ORDER BY CO_PURCHASE_COUNT DESC",
+        (product_name,),
+    )
+    rows = cur.fetchall()
+    return pd.DataFrame(rows, columns=["PRODUCT_NAME", "CO_PURCHASE_COUNT"])
+
+
 def get_kpi_data(conn):
     cur = conn.cursor()
     cur.execute(

@@ -80,6 +80,26 @@ df_top = (
 st.subheader("Top Products")
 st.plotly_chart(charts.top_products_chart(df_top), use_container_width=True)
 
+# ── Bundle Finder ────────────────────────────────────────────────────────────
+st.subheader("Bundle Finder")
+products = sorted(df_perf["PRODUCT_NAME"].unique())
+selected_product = st.selectbox("Select a product", products)
+df_bundle = db.get_bundle_data(conn, selected_product)
+if df_bundle.empty:
+    st.info("No co-purchase data found for this product.")
+else:
+    st.dataframe(
+        df_bundle.rename(columns={"PRODUCT_NAME": "Bought Together With", "CO_PURCHASE_COUNT": "Orders"}),
+        use_container_width=True,
+        hide_index=True,
+    )
+    st.download_button(
+        "Download CSV",
+        df_bundle.to_csv(index=False),
+        file_name="bundle.csv",
+        mime="text/csv",
+    )
+
 # ── Sales Performance Charts ──────────────────────────────────────────────────
 st.subheader("Sales Performance")
 col1, col2 = st.columns(2)
