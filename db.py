@@ -60,12 +60,13 @@ def get_revenue_trend(conn):
 def get_bundle_data(conn, product_name):
     cur = conn.cursor()
     cur.execute(
-        "SELECT b.PRODUCT_NAME, COUNT(DISTINCT a.ORDER_ID) AS CO_PURCHASE_COUNT "
+        "SELECT dp_b.PRODUCT_NAME, COUNT(DISTINCT a.ORDER_ID) AS CO_PURCHASE_COUNT "
         "FROM FCT_ORDER_ITEMS a "
-        "JOIN FCT_ORDER_ITEMS b ON a.ORDER_ID = b.ORDER_ID "
-        "  AND a.PRODUCT_NAME != b.PRODUCT_NAME "
-        "WHERE a.PRODUCT_NAME = %s "
-        "GROUP BY b.PRODUCT_NAME "
+        "JOIN DIM_PRODUCTS dp_a ON a.PRODUCT_ID = dp_a.PRODUCT_ID "
+        "JOIN FCT_ORDER_ITEMS b ON a.ORDER_ID = b.ORDER_ID AND a.PRODUCT_ID != b.PRODUCT_ID "
+        "JOIN DIM_PRODUCTS dp_b ON b.PRODUCT_ID = dp_b.PRODUCT_ID "
+        "WHERE dp_a.PRODUCT_NAME = %s "
+        "GROUP BY dp_b.PRODUCT_NAME "
         "ORDER BY CO_PURCHASE_COUNT DESC",
         (product_name,),
     )
