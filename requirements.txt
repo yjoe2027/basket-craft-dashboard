@@ -2,3 +2,4 @@ streamlit
 pytest
 snowflake-connector-python
 python-dotenv
+plotly
