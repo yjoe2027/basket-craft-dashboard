@@ -68,3 +68,9 @@ def test_sales_performance_section_renders():
     at = _run_app()
     assert not at.exception
     assert any(s.value == "Sales Performance" for s in at.subheader)
+
+
+def test_top_products_section_renders():
+    at = _run_app()
+    assert not at.exception
+    assert any(s.value == "Top Products" for s in at.subheader)

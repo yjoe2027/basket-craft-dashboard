@@ -43,6 +43,17 @@ def gross_profit_chart(df: pd.DataFrame) -> go.Figure:
     )
 
 
+def top_products_chart(df: pd.DataFrame) -> go.Figure:
+    return px.bar(
+        df,
+        x="TOTAL_REVENUE",
+        y="PRODUCT_NAME",
+        orientation="h",
+        title="Top Products by Revenue",
+        labels={"TOTAL_REVENUE": "Revenue ($)", "PRODUCT_NAME": "Product"},
+    )
+
+
 def order_count_chart(df: pd.DataFrame) -> go.Figure:
     return px.line(
         df,

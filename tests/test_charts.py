@@ -63,3 +63,15 @@ def test_order_count_chart_returns_figure():
     import charts
     fig = charts.order_count_chart(SAMPLE_DF)
     assert isinstance(fig, go.Figure)
+
+
+TOP_PRODUCTS_DF = pd.DataFrame([
+    {"PRODUCT_NAME": "Gift Basket",   "TOTAL_REVENUE": 2500.0},
+    {"PRODUCT_NAME": "Deluxe Basket", "TOTAL_REVENUE": 1300.0},
+])
+
+
+def test_top_products_chart_returns_figure():
+    import charts
+    fig = charts.top_products_chart(TOP_PRODUCTS_DF)
+    assert isinstance(fig, go.Figure)

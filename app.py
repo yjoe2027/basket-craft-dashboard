@@ -59,9 +59,29 @@ else:
 st.subheader("Revenue Trend")
 st.plotly_chart(charts.revenue_trend_chart(df_trend_filtered), use_container_width=True)
 
+# ── Top Products ─────────────────────────────────────────────────────────────
+df_perf = db.get_sales_performance(conn)
+df_perf["ORDER_MONTH"] = pd.to_datetime(df_perf["ORDER_MONTH"])
+
+if len(date_range) == 2:
+    df_perf_filtered = df_perf[
+        (df_perf["ORDER_MONTH"] >= pd.Timestamp(start))
+        & (df_perf["ORDER_MONTH"] <= pd.Timestamp(end))
+    ]
+else:
+    df_perf_filtered = df_perf
+
+df_top = (
+    df_perf_filtered.groupby("PRODUCT_NAME", as_index=False)["TOTAL_REVENUE"]
+    .sum()
+    .sort_values("TOTAL_REVENUE", ascending=True)
+)
+
+st.subheader("Top Products")
+st.plotly_chart(charts.top_products_chart(df_top), use_container_width=True)
+
 # ── Sales Performance Charts ──────────────────────────────────────────────────
 st.subheader("Sales Performance")
-df_perf = db.get_sales_performance(conn)
 col1, col2 = st.columns(2)
 with col1:
     st.plotly_chart(charts.revenue_chart(df_perf), use_container_width=True)
