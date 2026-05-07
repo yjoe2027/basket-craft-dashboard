@@ -1,5 +1,6 @@
 import os
 
+import pandas as pd
 import snowflake.connector
 import streamlit as st
 from dotenv import load_dotenv
@@ -29,3 +30,16 @@ def get_table_row_counts(conn):
         (schema,),
     )
     return {row[0]: row[1] for row in cur.fetchall()}
+
+
+def get_sales_performance(conn):
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT ORDER_MONTH, PRODUCT_NAME, TOTAL_REVENUE, GROSS_PROFIT, ORDER_COUNT "
+        "FROM MART_SALES_PERFORMANCE ORDER BY ORDER_MONTH"
+    )
+    rows = cur.fetchall()
+    return pd.DataFrame(
+        rows,
+        columns=["ORDER_MONTH", "PRODUCT_NAME", "TOTAL_REVENUE", "GROSS_PROFIT", "ORDER_COUNT"],
+    )
