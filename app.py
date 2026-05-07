@@ -34,6 +34,31 @@ if len(kpi_df) >= 2:
     c4.metric("Items Sold",      f"{int(cur_m['TOTAL_ITEMS_SOLD']):,}",
               _delta(cur_m["TOTAL_ITEMS_SOLD"], prev_m["TOTAL_ITEMS_SOLD"]))
 
+# ── Revenue Trend ─────────────────────────────────────────────────────────────
+df_trend = db.get_revenue_trend(conn)
+df_trend["ORDER_MONTH"] = pd.to_datetime(df_trend["ORDER_MONTH"])
+min_date = df_trend["ORDER_MONTH"].min().date()
+max_date = df_trend["ORDER_MONTH"].max().date()
+
+date_range = st.sidebar.date_input(
+    "Date range",
+    value=(min_date, max_date),
+    min_value=min_date,
+    max_value=max_date,
+)
+
+if len(date_range) == 2:
+    start, end = date_range
+    df_trend_filtered = df_trend[
+        (df_trend["ORDER_MONTH"] >= pd.Timestamp(start))
+        & (df_trend["ORDER_MONTH"] <= pd.Timestamp(end))
+    ]
+else:
+    df_trend_filtered = df_trend
+
+st.subheader("Revenue Trend")
+st.plotly_chart(charts.revenue_trend_chart(df_trend_filtered), use_container_width=True)
+
 # ── Sales Performance Charts ──────────────────────────────────────────────────
 st.subheader("Sales Performance")
 df_perf = db.get_sales_performance(conn)

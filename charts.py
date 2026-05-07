@@ -3,6 +3,16 @@ import plotly.express as px
 import plotly.graph_objects as go
 
 
+def revenue_trend_chart(df: pd.DataFrame) -> go.Figure:
+    return px.line(
+        df,
+        x="ORDER_MONTH",
+        y="TOTAL_REVENUE",
+        title="Revenue Trend",
+        labels={"ORDER_MONTH": "Month", "TOTAL_REVENUE": "Revenue ($)"},
+    )
+
+
 def revenue_chart(df: pd.DataFrame) -> go.Figure:
     return px.line(
         df,

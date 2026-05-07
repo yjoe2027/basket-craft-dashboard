@@ -35,6 +35,18 @@ SAMPLE_DF = pd.DataFrame([
 ])
 
 
+TREND_DF = pd.DataFrame([
+    {"ORDER_MONTH": date(2023, 1, 1), "TOTAL_REVENUE": 1500.0},
+    {"ORDER_MONTH": date(2023, 2, 1), "TOTAL_REVENUE": 2300.0},
+])
+
+
+def test_revenue_trend_chart_returns_figure():
+    import charts
+    fig = charts.revenue_trend_chart(TREND_DF)
+    assert isinstance(fig, go.Figure)
+
+
 def test_revenue_chart_returns_figure():
     import charts
     fig = charts.revenue_chart(SAMPLE_DF)

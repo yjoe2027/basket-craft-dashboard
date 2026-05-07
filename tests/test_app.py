@@ -19,21 +19,28 @@ SAMPLE_KPI_DF = pd.DataFrame([
     {"ORDER_MONTH": date(2026, 2, 1), "TOTAL_REVENUE": 129010.99, "TOTAL_ORDERS": 2701, "AVG_ORDER_VALUE": 47.76, "TOTAL_ITEMS_SOLD": 2701},
 ])
 
-COMMON_PATCHES = dict(
-    get_connection=MagicMock(),
-    get_table_row_counts={},
-    get_sales_performance=SAMPLE_PERF_DF,
-    get_kpi_data=SAMPLE_KPI_DF,
-)
+SAMPLE_TREND_DF = pd.DataFrame([
+    {"ORDER_MONTH": date(2026, 1, 1), "TOTAL_REVENUE": 132349.51},
+    {"ORDER_MONTH": date(2026, 2, 1), "TOTAL_REVENUE": 129010.99},
+    {"ORDER_MONTH": date(2026, 3, 1), "TOTAL_REVENUE": 79482.95},
+])
 
 
 def _run_app(**overrides):
-    kwargs = {**COMMON_PATCHES, **overrides}
+    defaults = dict(
+        get_connection=MagicMock(),
+        get_table_row_counts={},
+        get_sales_performance=SAMPLE_PERF_DF,
+        get_kpi_data=SAMPLE_KPI_DF,
+        get_revenue_trend=SAMPLE_TREND_DF,
+    )
+    kwargs = {**defaults, **overrides}
     mock_conn = kwargs.pop("get_connection")
     with patch("db.get_connection", return_value=mock_conn), \
          patch("db.get_table_row_counts", return_value=kwargs["get_table_row_counts"]), \
          patch("db.get_sales_performance", return_value=kwargs["get_sales_performance"]), \
-         patch("db.get_kpi_data", return_value=kwargs["get_kpi_data"]):
+         patch("db.get_kpi_data", return_value=kwargs["get_kpi_data"]), \
+         patch("db.get_revenue_trend", return_value=kwargs["get_revenue_trend"]):
         return AppTest.from_file("app.py").run()
 
 

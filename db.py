@@ -45,6 +45,18 @@ def get_sales_performance(conn):
     )
 
 
+def get_revenue_trend(conn):
+    cur = conn.cursor()
+    cur.execute(
+        "SELECT ORDER_MONTH, SUM(TOTAL_REVENUE) AS TOTAL_REVENUE "
+        "FROM MART_SALES_PERFORMANCE "
+        "GROUP BY ORDER_MONTH "
+        "ORDER BY ORDER_MONTH"
+    )
+    rows = cur.fetchall()
+    return pd.DataFrame(rows, columns=["ORDER_MONTH", "TOTAL_REVENUE"])
+
+
 def get_kpi_data(conn):
     cur = conn.cursor()
     cur.execute(
