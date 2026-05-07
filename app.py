@@ -57,7 +57,7 @@ else:
     df_trend_filtered = df_trend
 
 st.subheader("Revenue Trend")
-st.plotly_chart(charts.revenue_trend_chart(df_trend_filtered), use_container_width=True)
+st.plotly_chart(charts.revenue_trend_chart(df_trend_filtered), width="stretch")
 
 # ── Top Products ─────────────────────────────────────────────────────────────
 df_perf = db.get_sales_performance(conn)
@@ -78,7 +78,7 @@ df_top = (
 )
 
 st.subheader("Top Products")
-st.plotly_chart(charts.top_products_chart(df_top), use_container_width=True)
+st.plotly_chart(charts.top_products_chart(df_top), width="stretch")
 
 # ── Bundle Finder ────────────────────────────────────────────────────────────
 st.subheader("Bundle Finder")
@@ -90,7 +90,7 @@ if df_bundle.empty:
 else:
     st.dataframe(
         df_bundle.rename(columns={"PRODUCT_NAME": "Bought Together With", "CO_PURCHASE_COUNT": "Orders"}),
-        use_container_width=True,
+        width="stretch",
         hide_index=True,
     )
     st.download_button(
@@ -104,7 +104,7 @@ else:
 st.subheader("Sales Performance")
 col1, col2 = st.columns(2)
 with col1:
-    st.plotly_chart(charts.revenue_chart(df_perf), use_container_width=True)
+    st.plotly_chart(charts.revenue_chart(df_perf), width="stretch")
 with col2:
-    st.plotly_chart(charts.gross_profit_chart(df_perf), use_container_width=True)
-st.plotly_chart(charts.order_count_chart(df_perf), use_container_width=True)
+    st.plotly_chart(charts.gross_profit_chart(df_perf), width="stretch")
+st.plotly_chart(charts.order_count_chart(df_perf), width="stretch")
